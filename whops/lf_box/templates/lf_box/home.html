@@ -1,6 +1,13 @@
 <h1>whops.ie</h1>
 <p>It's Never a Lost Cause</p>
-<a href="{% url 'post_item' %}">Post Item</a>
+
+{% if user.is_authenticated %}
+    <p>Welcome, {{ user.username }}! <a href="{% url 'logout' %}">Logout</a></p>
+    <a href="{% url 'post_item' %}">Post Item</a>
+{% else %}
+    <p><a href="{% url 'login' %}">Login</a> or <a href="{% url 'register' %}">Register</a> to post an item.</p>
+{% endif %}
+
 {% for item in items %}
     <div>
         <h2>{{ item.title }}</h2>
