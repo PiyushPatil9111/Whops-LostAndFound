@@ -1,0 +1,11 @@
+<h1>whops.ie</h1>
+<p>It's Never a Lost Cause</p>
+<a href="{% url 'post_item' %}">Post Item</a>
+{% for item in items %}
+    <div>
+        <h2>{{ item.title }}</h2>
+        <img src="{{ item.image.url }}" alt="{{ item.title }}">
+        <p>{{ item.description }}</p>
+        <p>Labels: {{ item.labels }}</p>
+    </div>
+{% endfor %}
