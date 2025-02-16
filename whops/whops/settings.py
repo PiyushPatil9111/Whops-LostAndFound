@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -128,3 +129,10 @@ AWS_SECRET_ACCESS_KEY = 'your-secret-key'
 AWS_STORAGE_BUCKET_NAME = 'your-bucket-name'
 AWS_S3_REGION_NAME = 'your-region'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# Media files (uploaded by users)
+
+MEDIA_URL = '/media/'  # URL prefix for media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Path to the media directory on the filesystem
+
+LOGIN_REDIRECT_URL = 'home'  # Redirect to the 'home' URL after login
