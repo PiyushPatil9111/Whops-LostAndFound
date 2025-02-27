@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from .models import Item
-from .forms import ItemForm
+from .models import Item, Profile
+from .forms import ItemForm, ProfileForm
 from .utils import detect_labels
 from django.contrib.auth.decorators import login_required
 
 #Home Function for home page all object view.
+@login_required
 def home(request):
     items = Item.objects.all()
     return render(request, 'lf_box/home.html', {'items' : items})  #passing home.html as template and items is a dictionary getting all data from items model. Django will render this page with all details and send it back to user
@@ -16,6 +17,7 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():                             #THis if block will save user information after validation.
             user = form.save()
+            Profile.objects.get_or_create(user=user)
             login(request, user)
             return redirect('home')
     else:
@@ -36,3 +38,19 @@ def post_item(request):
     else:
         form = ItemForm()                               #When user reaches the for for the first time, means its a get method, not post, this will show a blank form to fill.
     return render(request, 'lf_box/post_item.html', {'form' : form})
+
+def edit_profile(request):
+    profile, created = Profile.objects.get_or_create(user=request.user)
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('view_profile', profile_id=profile.id)
+    else:
+        form = ProfileForm(instance=profile)
+    return render(request, 'lf_box/profile.html', {'form' : form})
+
+    
+def view_profile(request, profile_id):
+    profile = Profile.objects.get(id=profile_id)
+    return render(request, 'lf_box/view_profile.html', {'profile': profile})

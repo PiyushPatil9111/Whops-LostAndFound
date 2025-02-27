@@ -135,4 +135,5 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 MEDIA_URL = '/media/'  # URL prefix for media files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Path to the media directory on the filesystem
 
+LOGIN_URL = 'login'  # Name of the login URL pattern
 LOGIN_REDIRECT_URL = 'home'  # Redirect to the 'home' URL after login

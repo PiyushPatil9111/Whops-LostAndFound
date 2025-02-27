@@ -1,18 +1,42 @@
-<h1>whops.ie</h1>
-<p>It's Never a Lost Cause</p>
+{% extends 'lf_box/base.html' %}
 
-{% if user.is_authenticated %}
-    <p>Welcome, {{ user.username }}! <a href="{% url 'logout' %}">Logout</a></p>
-    <a href="{% url 'post_item' %}">Post Item</a>
-{% else %}
-    <p><a href="{% url 'login' %}">Login</a> or <a href="{% url 'register' %}">Register</a> to post an item.</p>
-{% endif %}
+{% block title %}Home - Whops.ie{% endblock %}
 
-{% for item in items %}
-    <div>
-        <h2>{{ item.title }}</h2>
-        <img src="{{ item.image.url }}" alt="{{ item.title }}">
-        <p>{{ item.description }}</p>
-        <p>Labels: {{ item.labels }}</p>
-    </div>
-{% endfor %}
+{% block content %}
+<div class="hero text-center p-4 rounded bg-dark bg-opacity-50">
+    <h1 class="fw-bold">Whops.ie</h1>
+    <p class="lead">It's Never a Lost Cause</p>
+
+    <!-- Add Post Button -->
+    {% if user.is_authenticated %}
+        <a href="{% url 'post_item' %}" class="btn btn-custom">Post an Item</a>
+    {% endif %}
+</div>
+
+<!-- Items List -->
+<div class="row mt-4">
+    {% for item in items %}
+        <div class="col-md-4 mb-4">
+            <div class="card item-card">
+                <img src="{{ item.image.url }}" alt="{{ item.title }}" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.title }}</h5>
+                    <p class="card-text">{{ item.description|truncatewords:20 }}</p>
+                    <p class="card-text"><strong>Labels:</strong> {{ item.labels }}</p>
+                    <p class="card-text"><strong>Posted by:</strong> 
+                        {% if item.user.profile %}
+                            <a href="{% url 'view_profile' item.user.profile.id %}" class="text-white-text-decoration-underline">
+                                {{ item.user.username }}
+                            </a>
+                        {% else %}
+                            <span>{{ item.user.username }}</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p class="text-center">No items found. <a href="{% url 'post_item' %}" class="btn btn-custom">Post an item</a> now!</p>
+    {% endfor %}
+</div>
+{% endblock %}
