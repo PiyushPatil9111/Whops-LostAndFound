@@ -1,4 +1,21 @@
 <h1>{{ profile.user.username }}'s Profile</h1>
 <p>Mobile Number: {{ profile.mobile_number }}</p>
 <p>Address: {{ profile.address }}</p>
+<h2>Your Posted Items</h2>
+{% if items %}
+    <ul>
+        {% for item in items %}
+            <li>
+                <h3>{{ item.title }}</h3>
+                <img src="{{ item.image.url }}" alt="{{ item.title }}" width="100">
+                <p>{{ item.description }}</p>
+                <p>Status: {{ item.status }}</p>
+                <p>Location: {{ item.location }}</p>
+                <p>Date: {{ item.date }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>You haven't posted any items yet.</p>
+{% endif %}
 <a href="{% url 'home' %}">Back to Home</a>

@@ -5,3 +5,28 @@
     <button type="submit">Save</button>
 </form>
 <a href="{% url 'home' %}">Back to Home</a>
+
+<h2>Your Posted Items</h2>
+{% if items %}
+    <ul>
+        {% for item in items %}
+            <li>
+                <h3>{{ item.title }}</h3>
+                <img src="{{ item.image.url }}" alt="{{ item.title }}" width="100">
+                <p>{{ item.description }}</p>
+                <p>Status: {{ item.status }}</p>
+                <p>Location: {{ item.location }}</p>
+                <p>Date: {{ item.date }}</p>
+                <a href="{% url 'edit_items' item.id %}">Edit</a>
+                <!--<a href="{% url 'delete_item' item_id=item.id profile_id=profile.id %}">Delete</a>-->
+                {% if profile.id %}
+                    <a href="{% url 'delete_item' item.id profile.id %}" class="btn btn-danger">Delete</a>
+                {%else %}
+                    <p>Error: Profile ID is missing.</p>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>You haven't posted any items yet.</p>
+{% endif %}

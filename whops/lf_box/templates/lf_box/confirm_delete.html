@@ -1,0 +1,7 @@
+<h1>Delete Item</h1>
+<p>Are you sure you want to delete "{{ item.title }}"?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, delete</button>
+    <a href="{% url 'view_profile' request.user.profile.id %}">Cancel</a>
+</form>

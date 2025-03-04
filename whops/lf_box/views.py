@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from .models import Item, Profile
+from django.urls import reverse
 from .forms import ItemForm, ProfileForm
 from .utils import detect_labels
 from django.contrib.auth.decorators import login_required
@@ -41,6 +42,7 @@ def post_item(request):
 
 def edit_profile(request):
     profile, created = Profile.objects.get_or_create(user=request.user)
+    items = Item.objects.filter(user=request.user)      #Getting all items posted by the user
     if request.method == 'POST':
         form = ProfileForm(request.POST, instance=profile)
         if form.is_valid():
@@ -48,9 +50,32 @@ def edit_profile(request):
             return redirect('view_profile', profile_id=profile.id)
     else:
         form = ProfileForm(instance=profile)
-    return render(request, 'lf_box/profile.html', {'form' : form})
+    return render(request, 'lf_box/profile.html', {'form' : form, 'items' : items, 'profile': profile})
 
     
 def view_profile(request, profile_id):
-    profile = Profile.objects.get(id=profile_id)
-    return render(request, 'lf_box/view_profile.html', {'profile': profile})
+    profile = get_object_or_404(Profile, id=profile_id)
+    items = Item.objects.filter(user=profile.user)
+    return render(request, 'lf_box/view_profile.html', {'profile': profile, 'items' : items})
+
+def edit_items(request, item_id):
+    item = get_object_or_404(Item, id=item_id, user=request.user)
+    profile = get_object_or_404(Profile, user=request.user)  # Get the user's profile
+    if request.method == "POST":
+        form = ItemForm(request.POST, request.FILES, instance=item)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('view_profile', kwargs={'profile_id': profile.id}))
+    else:
+        form = ItemForm(instance=item)
+    return render(request, 'lf_box/edit_item.html', {'form': form})
+
+@login_required
+def delete_item(request, item_id, profile_id):
+    item = get_object_or_404(Item, id=item_id, user=request.user)  # Ensure user owns the item
+    profile = get_object_or_404(Profile, id=profile_id)  # Ensure profile exists
+
+    if request.method == 'POST':
+        item.delete()
+        return redirect('view_profile', profile_id=profile.id)  # Redirect to correct profile
+    return render(request, 'lf_box/confirm_delete.html', {'item': item, 'profile': profile})
