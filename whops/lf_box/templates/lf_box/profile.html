@@ -1,32 +1,99 @@
-<h1>Profile</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
-</form>
-<a href="{% url 'home' %}">Back to Home</a>
+{% extends 'lf_box/base.html' %}
 
-<h2>Your Posted Items</h2>
-{% if items %}
-    <ul>
-        {% for item in items %}
-            <li>
-                <h3>{{ item.title }}</h3>
-                <img src="{{ item.image.url }}" alt="{{ item.title }}" width="100">
-                <p>{{ item.description }}</p>
-                <p>Status: {{ item.status }}</p>
-                <p>Location: {{ item.location }}</p>
-                <p>Date: {{ item.date }}</p>
-                <a href="{% url 'edit_items' item.id %}">Edit</a>
-                <!--<a href="{% url 'delete_item' item_id=item.id profile_id=profile.id %}">Delete</a>-->
-                {% if profile.id %}
-                    <a href="{% url 'delete_item' item.id profile.id %}" class="btn btn-danger">Delete</a>
-                {%else %}
-                    <p>Error: Profile ID is missing.</p>
-                {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>You haven't posted any items yet.</p>
-{% endif %}
+{% block title %}Profile - Whops.ie{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="text-center mb-5">
+        <h1 class="fw-bold" style="color: #f8f9fa;">Profile</h1>
+        <p class="lead" style="color: #e0e0e0;">Manage your profile and posted items.</p>
+    </div>
+
+    <!-- Profile Form -->
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card p-4 mb-4" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+                <form method="post">
+                    {% csrf_token %}
+                    <!-- Display Username (Read-Only) -->
+                    <div class="mb-3">
+                        <label for="username" class="form-label" style="color: #f8f9fa;">Username</label>
+                        <input type="text" id="username" class="form-control rounded-pill bg-transparent text-white border-2 border-white p-2" 
+                               value="{{ profile.user.username }}" readonly>
+                    </div>
+                    <!-- Editable Fields: Address and Mobile Number -->
+                    <div class="mb-3">
+                        <label for="{{ form.address.id_for_label }}" class="form-label" style="color: #f8f9fa;">Address</label>
+                        <input type="text" name="{{ form.address.name }}" id="{{ form.address.id_for_label }}" 
+                               class="form-control rounded-pill bg-transparent text-white border-2 border-white p-2" 
+                               value="{{ form.address.value }}" placeholder="Enter your address" style="transition: all 0.3s;">
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.mobile_number.id_for_label }}" class="form-label" style="color: #f8f9fa;">Mobile Number</label>
+                        <input type="text" name="{{ form.mobile_number.name }}" id="{{ form.mobile_number.id_for_label }}" 
+                               class="form-control rounded-pill bg-transparent text-white border-2 border-white p-2" 
+                               value="{{ form.mobile_number.value }}" placeholder="Enter your mobile number" style="transition: all 0.3s;">
+                    </div>
+                    <!-- Submit Button -->
+                    <div class="text-center">
+                        <button type="submit" class="btn w-100 rounded-pill p-2 fw-bold mt-3" 
+                                style="background: linear-gradient(45deg, #2575fc, #6a11cb); color: white; border: none; transition: all 0.3s;">
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+                <!-- Back to Home Link -->
+                <div class="text-center mt-3">
+                    <a href="{% url 'home' %}" class="btn btn-outline-light rounded-pill">Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Posted Items Section -->
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="fw-bold mb-4" style="color: #f8f9fa;">Your Posted Items</h2>
+            {% if items %}
+                <div class="row">
+                    {% for item in items %}
+                        <div class="col-md-6 mb-4">
+                            <div class="card p-3" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+                                <h3 style="color: #f8f9fa;">{{ item.title }}</h3>
+                                <img src="{{ item.image.url }}" alt="{{ item.title }}" class="img-fluid mb-3" style="border-radius: 10px;">
+                                <p style="color: #e0e0e0;">{{ item.description }}</p>
+                                <p style="color: #e0e0e0;"><strong>Status:</strong> {{ item.status }}</p>
+                                <p style="color: #e0e0e0;"><strong>Location:</strong> {{ item.location }}</p>
+                                <p style="color: #e0e0e0;"><strong>Date:</strong> {{ item.date }}</p>
+                                <div class="d-flex justify-content-between">
+                                    <a href="{% url 'edit_items' item.id %}" class="btn btn-custom">Edit</a>
+                                    <a href="{% url 'delete_item' item.id profile.id %}" class="btn btn-danger">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-center" style="color: #e0e0e0;">You haven't posted any items yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<style>
+    .form-control:hover {
+        border-color: #6a11cb !important;
+        box-shadow: 0 0 10px rgba(106, 17, 203, 0.5);
+    }
+
+    .form-control:focus {
+        border-color: #2575fc !important;
+        box-shadow: 0 0 15px rgba(37, 117, 252, 0.7);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(37, 117, 252, 0.4);
+    }
+</style>
+{% endblock %}

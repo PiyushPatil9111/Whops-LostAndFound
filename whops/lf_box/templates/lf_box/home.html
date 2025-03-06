@@ -46,4 +46,43 @@
         <p class="text-center" style="color: #e0e0e0;">No items found. <a href="{% url 'post_item' %}" class="btn btn-custom">Post an item</a> now!</p>
     {% endfor %}
 </div>
+<style>
+    /* Highlight Effect for Profile Information */
+    .profile-value {
+        transition: all 0.3s;
+    }
+
+    .profile-value:hover {
+        color: #ff9a9e !important; /* Highlight color on hover */
+        transform: scale(1.05); /* Slightly enlarge on hover */
+    }
+
+    /* Hover Effect for Posted Item Cards */
+    .item-card {
+        transition: all 0.3s;
+    }
+
+    .item-card:hover {
+        transform: translateY(-5px); /* Lift the card on hover */
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); /* Add shadow on hover */
+        border-color: #6a11cb !important; /* Change border color on hover */
+    }
+
+    /* Hover Effects for Form Controls and Buttons */
+    .form-control:hover {
+        border-color: #6a11cb !important;
+        box-shadow: 0 0 10px rgba(106, 17, 203, 0.5);
+    }
+
+    .form-control:focus {
+        border-color: #2575fc !important;
+        box-shadow: 0 0 15px rgba(37, 117, 252, 0.7);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(37, 117, 252, 0.4);
+    }
+</style>
 {% endblock %}
