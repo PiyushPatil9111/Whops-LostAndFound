@@ -6,7 +6,6 @@ from django.urls import reverse
 from .forms import ItemForm, ProfileForm
 from .utils import detect_labels
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
 
 #Home Function for home page all object view.
 @login_required
@@ -80,25 +79,3 @@ def delete_item(request, item_id, profile_id):
         item.delete()
         return redirect('view_profile', profile_id=profile.id)  # Redirect to correct profile
     return render(request, 'lf_box/confirm_delete.html', {'item': item, 'profile': profile})
-
-def search(request):
-    query = request.GET.get('q')  # Get the search query from the URL
-    results = []
-
-    if query:
-        # Search for items
-        items = Item.objects.filter(
-            Q(title__icontains=query) | Q(description__icontains=query) | Q(labels__icontains=query)
-        )
-
-        # Search for profiles (based on the associated User's username)
-        profiles = Profile.objects.filter(
-            Q(user__username__icontains=query)
-        )
-
-        results = {
-            'items': items,
-            'profiles': profiles,
-        }
-
-    return render(request, 'lf_box/search_results.html', {'results': results, 'query': query})

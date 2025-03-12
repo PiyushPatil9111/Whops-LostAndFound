@@ -1,101 +1,21 @@
-{% extends 'lf_box/base.html' %}
-
-{% block title %}{{ profile.user.username }}'s Profile - Whops.ie{% endblock %}
-
-{% block content %}
-<div class="container mt-4">
-    <div class="text-center mb-5">
-        <h1 class="fw-bold" style="color: #f8f9fa;">{{ profile.user.username }}'s Profile</h1>
-        <p class="lead" style="color: #e0e0e0;">View profile and posted items.</p>
-    </div>
-
-    <!-- Profile and Posted Items Section -->
-    <div class="row">
-        <!-- User Information (Left Side) -->
-        <div class="col-md-4">
-            <div class="card p-4 mb-4" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
-                <div class="mb-3">
-                    <h3 style="color: #f8f9fa;">Username</h3>
-                    <p class="profile-value" style="color: #fad0c4; font-size: 1.2rem;">{{ profile.user.username }}</p>
-                </div>
-                <div class="mb-3">
-                    <h3 style="color: #f8f9fa;">Mobile Number</h3>
-                    <p class="profile-value" style="color: #fad0c4; font-size: 1.2rem;">{{ profile.mobile_number }}</p>
-                </div>
-                <div class="mb-3">
-                    <h3 style="color: #f8f9fa;">Address</h3>
-                    <p class="profile-value" style="color: #fad0c4; font-size: 1.2rem;">{{ profile.address }}</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Posted Items (Right Side) -->
-        <div class="col-md-8">
-            <h2 class="fw-bold mb-4" style="color: #f8f9fa;">Posted Items</h2>
-            {% if items %}
-                <div class="row">
-                    {% for item in items %}
-                        <div class="col-md-6 mb-4">
-                            <div class="card p-3 item-card" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
-                                <h3 style="color: #f8f9fa;">{{ item.title }}</h3>
-                                <img src="{{ item.image.url }}" alt="{{ item.title }}" class="img-fluid mb-3" style="border-radius: 10px;">
-                                <p style="color: #e0e0e0;">{{ item.description }}</p>
-                                <p style="color: #e0e0e0;"><strong>Status:</strong> {{ item.status }}</p>
-                                <p style="color: #e0e0e0;"><strong>Location:</strong> {{ item.location }}</p>
-                                <p style="color: #e0e0e0;"><strong>Date:</strong> {{ item.date }}</p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <p class="text-center" style="color: #e0e0e0;">No items posted yet.</p>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- Back to Home Link -->
-    <div class="text-center mt-4">
-        <a href="{% url 'home' %}" class="btn btn-outline-light rounded-pill">Back to Home</a>
-    </div>
-</div>
-
-<style>
-    /* Highlight Effect for Profile Information */
-    .profile-value {
-        transition: all 0.3s;
-    }
-
-    .profile-value:hover {
-        color: #ff9a9e !important; /* Highlight color on hover */
-        transform: scale(1.05); /* Slightly enlarge on hover */
-    }
-
-    /* Hover Effect for Posted Item Cards */
-    .item-card {
-        transition: all 0.3s;
-    }
-
-    .item-card:hover {
-        transform: translateY(-5px); /* Lift the card on hover */
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); /* Add shadow on hover */
-        border-color: #6a11cb !important; /* Change border color on hover */
-    }
-
-    /* Hover Effects for Form Controls and Buttons */
-    .form-control:hover {
-        border-color: #6a11cb !important;
-        box-shadow: 0 0 10px rgba(106, 17, 203, 0.5);
-    }
-
-    .form-control:focus {
-        border-color: #2575fc !important;
-        box-shadow: 0 0 15px rgba(37, 117, 252, 0.7);
-        background: rgba(255, 255, 255, 0.1);
-    }
-
-    .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(37, 117, 252, 0.4);
-    }
-</style>
-{% endblock %}
+<h1>{{ profile.user.username }}'s Profile</h1>
+<p>Mobile Number: {{ profile.mobile_number }}</p>
+<p>Address: {{ profile.address }}</p>
+<h2>Your Posted Items</h2>
+{% if items %}
+    <ul>
+        {% for item in items %}
+            <li>
+                <h3>{{ item.title }}</h3>
+                <img src="{{ item.image.url }}" alt="{{ item.title }}" width="100">
+                <p>{{ item.description }}</p>
+                <p>Status: {{ item.status }}</p>
+                <p>Location: {{ item.location }}</p>
+                <p>Date: {{ item.date }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>You haven't posted any items yet.</p>
+{% endif %}
+<a href="{% url 'home' %}">Back to Home</a>
