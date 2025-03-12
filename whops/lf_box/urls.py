@@ -8,4 +8,5 @@ urlpatterns = [
     path('profile/<int:profile_id>/', views.view_profile, name='view_profile'),
     path('edit-item/<int:item_id>/', views.edit_items, name='edit_items'),
     path('delete-item/<int:item_id>/<int:profile_id>', views.delete_item, name='delete_item'),
+    path('search/', views.search, name='search'),
 ]

@@ -1,0 +1,62 @@
+{% extends 'lf_box/base.html' %}
+
+{% block title %}Search Results - Whops.ie{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="fw-bold mb-4">Search Results for "{{ query }}"</h2>
+
+    <!-- Display Item Results -->
+    {% if results.items %}
+        <h4 class="mt-4">Items</h4>
+        <div class="row">
+            {% for item in results.items %}
+                <div class="col-md-4 mb-4">
+                    <div class="card item-card h-100">
+                        <img src="{{ item.image.url }}" alt="{{ item.title }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.title }}</h5>
+                            <p class="card-text">{{ item.description|truncatewords:15 }}</p>
+                            <p class="card-text"><strong>Labels:</strong> {{ item.labels }}</p>
+                            <p class="card-text"><strong>Posted by:</strong> 
+                                {% if item.user.profile %}
+                                    <a href="{% url 'view_profile' item.user.profile.id %}" style="color: #fad0c4; text-decoration: none;">
+                                        {{ item.user.username }}
+                                    </a>
+                                {% else %}
+                                    <span>{{ item.user.username }}</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No items found.</p>
+    {% endif %}
+
+    <!-- Display Profile Results -->
+    {% if results.profiles %}
+        <h4 class="mt-4">Users</h4>
+        <div class="row">
+            {% for profile in results.profiles %}
+                <div class="col-md-4 mb-4">
+                    <div class="card item-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ profile.user.username }}</h5>
+                            <p class="card-text">
+                                <a href="{% url 'view_profile' profile.id %}" style="color: #fad0c4; text-decoration: none;">
+                                    View Profile
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No users found.</p>
+    {% endif %}
+</div>
+{% endblock %}
