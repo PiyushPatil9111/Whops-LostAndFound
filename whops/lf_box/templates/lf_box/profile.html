@@ -1,32 +1,145 @@
-<h1>Profile</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
-</form>
-<a href="{% url 'home' %}">Back to Home</a>
+{% extends 'lf_box/base.html' %}
 
-<h2>Your Posted Items</h2>
-{% if items %}
-    <ul>
-        {% for item in items %}
-            <li>
-                <h3>{{ item.title }}</h3>
-                <img src="{{ item.image.url }}" alt="{{ item.title }}" width="100">
-                <p>{{ item.description }}</p>
-                <p>Status: {{ item.status }}</p>
-                <p>Location: {{ item.location }}</p>
-                <p>Date: {{ item.date }}</p>
-                <a href="{% url 'edit_items' item.id %}">Edit</a>
-                <!--<a href="{% url 'delete_item' item_id=item.id profile_id=profile.id %}">Delete</a>-->
-                {% if profile.id %}
-                    <a href="{% url 'delete_item' item.id profile.id %}" class="btn btn-danger">Delete</a>
-                {%else %}
-                    <p>Error: Profile ID is missing.</p>
-                {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>You haven't posted any items yet.</p>
-{% endif %}
+{% block title %}Profile - Whops.ie{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Left Column: Profile Form and Options -->
+        <div class="col-md-4">
+            <div class="text-center mb-5">
+                <h1 class="fw-bold" style="color: #f8f9fa;">Profile</h1>
+            </div>
+
+            <!-- Profile Form -->
+            <div class="card p-4 mb-4" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+                <form method="post">
+                    {% csrf_token %}
+                    <!-- Form Fields -->
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label" style="color: #f8f9fa;">{{ field.label }}</label>
+                        <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" 
+                               class="form-control rounded-pill bg-transparent text-white border-2 border-white p-2 input-field" 
+                               placeholder="Enter {{ field.label }}" value="{{ field.value|default_if_none:'' }}" 
+                               style="transition: all 0.3s;">
+                        <!-- Display form errors for the field -->
+                        {% if field.errors %}
+                            <div class="text-danger mt-2">
+                                {% for error in field.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    <!-- Save Button -->
+                    <div class="text-center">
+                        <button type="submit" class="btn w-100 rounded-pill p-2 fw-bold mt-3" 
+                                style="background: linear-gradient(45deg, #2575fc, #6a11cb); color: white; border: none; transition: all 0.3s;">
+                            Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Back to Home Link -->
+            <div class="text-center">
+                <a href="{% url 'home' %}" class="btn btn-outline-light rounded-pill">Back to Home</a>
+            </div>
+        </div>
+
+        <!-- Right Column: First Few Posted Items -->
+        <div class="col-md-8">
+            <h2 class="text-center mb-4" style="color: #f8f9fa;">Your Posted Items</h2>
+            {% if items %}
+                <div class="row">
+                    <!-- Display the first 2 items in the right column -->
+                    {% for item in items|slice:":2" %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card p-3 h-100 d-flex flex-column" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+                            <h3 style="color: #f8f9fa;">{{ item.title }}</h3>
+                            <img src="{{ item.image.url }}" alt="{{ item.title }}" class="img-fluid mb-3" style="border-radius: 10px; max-height: 200px; object-fit: cover;">
+                            <p style="color: #e0e0e0; flex-grow: 1;">{{ item.description }}</p>
+                            <p style="color: #e0e0e0;"><strong>Status:</strong> {{ item.get_status_display }}</p>
+                            <p style="color: #e0e0e0;"><strong>Location:</strong> {{ item.location }}</p>
+                            <p style="color: #e0e0e0;"><strong>Date:</strong> {{ item.date }}</p>
+                            <div class="d-flex gap-2">
+                                <a href="{% url 'edit_items' item.id %}" class="btn btn-outline-light rounded-pill">Edit</a>
+                                {% if profile.id %}
+                                    <a href="{% url 'delete_item' item.id profile.id %}" class="btn btn-outline-danger rounded-pill">Delete</a>
+                                {% else %}
+                                    <p class="text-danger">Error: Profile ID is missing.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-center" style="color: #e0e0e0;">You haven't posted any items yet.</p>
+            {% endif %}
+        </div>
+    </div> <!-- Close the first row -->
+
+    <!-- Full-width section for remaining items -->
+    {% if items|length > 2 %}
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <!-- Display the remaining items starting from the first column -->
+                {% for item in items|slice:"2:" %}
+                <div class="col-md-6 mb-4">
+                    <div class="card p-3 h-100 d-flex flex-column" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+                        <h3 style="color: #f8f9fa;">{{ item.title }}</h3>
+                        <img src="{{ item.image.url }}" alt="{{ item.title }}" class="img-fluid mb-3" style="border-radius: 10px; max-height: 200px; object-fit: cover;">
+                        <p style="color: #e0e0e0; flex-grow: 1;">{{ item.description }}</p>
+                        <p style="color: #e0e0e0;"><strong>Status:</strong> {{ item.get_status_display }}</p>
+                        <p style="color: #e0e0e0;"><strong>Location:</strong> {{ item.location }}</p>
+                        <p style="color: #e0e0e0;"><strong>Date:</strong> {{ item.date }}</p>
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'edit_items' item.id %}" class="btn btn-outline-light rounded-pill">Edit</a>
+                            {% if profile.id %}
+                                <a href="{% url 'delete_item' item.id profile.id %}" class="btn btn-outline-danger rounded-pill">Delete</a>
+                            {% else %}
+                                <p class="text-danger">Error: Profile ID is missing.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Custom CSS for Hover and Focus Effects -->
+<style>
+    .input-field:hover {
+        border-color: #6a11cb !important; /* Purple border on hover */
+        box-shadow: 0 0 8px rgba(106, 17, 203, 0.6) !important; /* Glow effect */
+    }
+
+    .input-field:focus {
+        border-color: #2575fc !important; /* Blue border on focus */
+        box-shadow: 0 0 12px rgba(37, 117, 252, 0.8) !important; /* Stronger glow effect */
+        background-color: rgba(255, 255, 255, 0.05) !important; /* Slightly lighter background on focus */
+    }
+
+    .btn-outline-light, .btn-outline-danger {
+        transition: all 0.3s;
+    }
+
+    .btn-outline-light:hover {
+        background-color: #6a11cb;
+        border-color: #6a11cb;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+</style>
+{% endblock %}
