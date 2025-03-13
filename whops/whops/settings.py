@@ -75,10 +75,21 @@ WSGI_APPLICATION = 'whops.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
+"""DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}"""
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'lfbox_db',
+        'USER': 'lfbox_user',
+        'PASSWORD': 'Mildstones@911',
+        'HOST': 'localhost',
+        'PORT': '5431',  # Change if using a different port
     }
 }
 
