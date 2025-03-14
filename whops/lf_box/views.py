@@ -8,6 +8,7 @@ from .utils import detect_labels
 from django.contrib.auth.decorators import login_required
 from .image_utils import resize_image
 from io import BytesIO
+from django.db.models import Q
 
 #Home Function for home page all object view.
 @login_required
@@ -88,10 +89,6 @@ def delete_item(request, item_id, profile_id):
         item.delete()
         return redirect('view_profile', profile_id=profile.id)  # Redirect to correct profile
     return render(request, 'lf_box/confirm_delete.html', {'item': item, 'profile': profile})
-
-from django.shortcuts import render
-from django.db.models import Q
-from .models import Item, Profile  # Import your models
 
 def search(request):
     query = request.GET.get('q')  # Get the search query from the URL
