@@ -8,7 +8,7 @@ filelock==3.17.0
 jmespath==1.0.1
 pillow==11.1.0
 platformdirs==4.3.6
-psycopg2==2.9.10
+psycopg2-binary==2.9.10
 python-dateutil==2.9.0.post0
 s3transfer==0.11.4
 six==1.17.0
