@@ -6,6 +6,9 @@ from django.urls import reverse
 from .forms import ItemForm, ProfileForm
 from .utils import detect_labels
 from django.contrib.auth.decorators import login_required
+from .image_utils import resize_image
+from io import BytesIO
+from django.db.models import Q
 
 #Home Function for home page all object view.
 @login_required
@@ -25,20 +28,27 @@ def register(request):
         form = UserCreationForm()                       #When User clicks on register, it would be a get request, loading the registeration form.
     return render(request, 'lf_box/register.html', {'form': form})
 
+@login_required
 def post_item(request):
-    if request.method == "POST":                        # Check if the request is a POST request.
-        form = ItemForm(request.POST, request.FILES)    # Get form data and files from users POST request after submission .
-        if form.is_valid():                             # Validate form
-            item = form.save(commit=False)              # Save the form data to an Item object
-            item.user = request.user                    # Assigns the logged in user to the item.
-            image_bytes = item.image.read()             # Reads uploaded image in to bytes format
-            #labels = detect_labels(image_bytes)         # Calling detect_labels function which will provide AWS Rekognition analysis output in form of Labels.
-            #item.labels = ", ".join([label['Name'] for label in labels]) #Creates a comma sepated string of labels and assigns it to lebel field for that item.
-            item.save()                                 # Saves the new item object to database.
-            return redirect('home')                     # Redirects back to home page.
+    if request.method == "POST":
+        form = ItemForm(request.POST, request.FILES)
+        if form.is_valid():
+            item = form.save(commit=False)
+            item.user = request.user
+            image_bytes = item.image.read()
+
+            # Resize the image
+            resized_image_bytes = resize_image(image_bytes, 800)  # Example: Max size 800 pixels
+
+            # Save the resized image back to the item
+            item.image.file = BytesIO(resized_image_bytes)
+            item.image.name = item.image.name  # Keep the original filename (important!)
+
+            item.save()
+            return redirect('home')
     else:
-        form = ItemForm()                               #When user reaches the for for the first time, means its a get method, not post, this will show a blank form to fill.
-    return render(request, 'lf_box/post_item.html', {'form' : form})
+        form = ItemForm()
+    return render(request, 'lf_box/post_item.html', {'form': form})
 
 def edit_profile(request):
     profile, created = Profile.objects.get_or_create(user=request.user)
@@ -79,10 +89,6 @@ def delete_item(request, item_id, profile_id):
         item.delete()
         return redirect('view_profile', profile_id=profile.id)  # Redirect to correct profile
     return render(request, 'lf_box/confirm_delete.html', {'item': item, 'profile': profile})
-
-from django.shortcuts import render
-from django.db.models import Q
-from .models import Item, Profile  # Import your models
 
 def search(request):
     query = request.GET.get('q')  # Get the search query from the URL

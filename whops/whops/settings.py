@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-=vj@-i+4a(ci80p$gl6$1im@tjk5xusarm%4e-m0xrmvk!-=@!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["whops.us-east-1.elasticbeanstalk.com", "127.0.0.1"]
 
 
 # Application definition
@@ -75,14 +75,19 @@ WSGI_APPLICATION = 'whops.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-"""DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}"""
 
 DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('RDS_DB_NAME', 'default_db_name'),
+        'USER': os.environ.get('RDS_USERNAME', 'default_user'),
+        'PASSWORD': os.environ.get('RDS_PASSWORD', 'default_password'),
+        'HOST': os.environ.get('RDS_HOSTNAME', 'localhost'),
+        'PORT': os.environ.get('RDS_PORT', '5432'),
+    }
+}
+
+"""DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'lfbox_db',
@@ -91,7 +96,7 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '5431',  # Change if using a different port
     }
-}
+}"""
 
 
 # Password validation
