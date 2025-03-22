@@ -3,7 +3,7 @@ name: Deploy to Elastic Beanstalk
 on:
   push:
     branches:
-      - main  # Change if you deploy from a different branch
+      - main  # Change if deploying from a different branch
 
 jobs:
   deploy:
@@ -27,11 +27,15 @@ jobs:
       - name: Zip Application for Deployment
         run: zip -r deploy.zip . -x "venv/*" ".git/*"
 
-      - name: Configure AWS CLI
+      - name: Configure AWS CLI with Temporary Credentials
         run: |
           aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set aws_session_token ${{ secrets.AWS_SESSION_TOKEN }}
           aws configure set region ${{ secrets.AWS_REGION }}
+
+      - name: Verify AWS Credentials
+        run: aws sts get-caller-identity
 
       - name: Deploy to Elastic Beanstalk
         run: |
