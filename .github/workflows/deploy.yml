@@ -17,7 +17,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.8
+          python-version: "3.13"
 
       - name: Install dependencies
         run: |
@@ -35,9 +35,12 @@ jobs:
 
       - name: Deploy to Elastic Beanstalk
         run: |
+          EB_BUCKET="elasticbeanstalk-${{ secrets.AWS_REGION }}-${{ secrets.AWS_ACCOUNT_ID }}"
+          aws s3 cp deploy.zip s3://$EB_BUCKET/deploy-${{ github.run_number }}.zip
+          
           aws elasticbeanstalk create-application-version --application-name ${{ secrets.EB_APP_NAME }} \
             --version-label "ver-${{ github.run_number }}" \
-            --source-bundle S3Bucket=my-bucket,S3Key=deploy.zip
+            --source-bundle S3Bucket=$EB_BUCKET,S3Key=deploy-${{ github.run_number }}.zip
 
           aws elasticbeanstalk update-environment --environment-name ${{ secrets.EB_ENV_NAME }} \
             --version-label "ver-${{ github.run_number }}"
