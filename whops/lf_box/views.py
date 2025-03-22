@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from .image_utils import resize_image
 from io import BytesIO
 from django.db.models import Q
+import logging
 
 #Home Function for home page all object view.
 @login_required
@@ -45,6 +46,7 @@ def post_item(request):
             item.image.name = item.image.name  # Keep the original filename (important!)
 
             item.save()
+            #print(f"Image uploaded to: {item.image.url}")
             return redirect('home')
     else:
         form = ItemForm()

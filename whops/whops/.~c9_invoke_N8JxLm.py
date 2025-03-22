@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-=vj@-i+4a(ci80p$gl6$1im@tjk5xusarm%4e-m0xrmvk!-=@!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [".elasticbeanstalk.com", "172.31.81.187", "127.0.0.1"]
+ALLOWED_HOSTS = [".elasticbeanstalk.com", "172.31.6.119", "127.0.0.1"]
 
 
 # Application definition
@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'lf_box',
-    'storages',
+    'storages'
 ]
 
 MIDDLEWARE = [
@@ -134,15 +134,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-#STATIC_URL = 'static/'
+STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#AWS_ACCESS_KEY_ID = 'ASIA3IGI23S2QQDE3NRZ'
-#AWS_SECRET_ACCESS_KEY = 'dYjhQ/2xAD1UwEDdnV8H4Ph3BXsk8GLP3QEaXxux'
+#AWS_ACCESS_KEY_ID = 'your-access-key'
+#AWS_SECRET_ACCESS_KEY = 'your-secret-key'
 # Django Storages configuration
 AWS_STORAGE_BUCKET_NAME = 'whops-lfbox-s3-bucket'  # Replace with your bucket name
 AWS_S3_SIGNATURE_NAME = 's3v4'
@@ -150,7 +150,6 @@ AWS_S3_REGION_NAME = 'us-east-1'  # Replace with your bucket's region
 AWS_S3_FILE_OVERWRITE = False
 AWS_S3_VERITY = True
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
-AWS_QUERYSTRING_AUTH = False  # Allow public access
 
 # Use IAM role for authentication (no access keys needed)
 AWS_USE_INSTANCE_PROFILE = True
@@ -158,9 +157,7 @@ AWS_USE_INSTANCE_PROFILE = True
 # Media files configuration
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}'
-#STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'  # Or use s3.amazonaws.com
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
 #MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Path to the media directory on the filesystem
 
 LOGIN_URL = 'login'  # Name of the login URL pattern
