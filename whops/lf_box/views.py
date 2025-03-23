@@ -10,6 +10,10 @@ from .image_utils import resize_image
 from io import BytesIO
 from django.db.models import Q
 import logging
+import boto3 
+import botocore.exceptions
+from django.conf import settings
+from django.contrib import messages
 
 #Home Function for home page all object view.
 @login_required
@@ -29,7 +33,6 @@ def register(request):
         form = UserCreationForm()                       #When User clicks on register, it would be a get request, loading the registeration form.
     return render(request, 'lf_box/register.html', {'form': form})
 
-@login_required
 def post_item(request):
     if request.method == "POST":
         form = ItemForm(request.POST, request.FILES)
@@ -39,14 +42,31 @@ def post_item(request):
             image_bytes = item.image.read()
 
             # Resize the image
-            resized_image_bytes = resize_image(image_bytes, 800)  # Example: Max size 800 pixels
+            resized_image_bytes = resize_image(image_bytes, 800)
 
             # Save the resized image back to the item
             item.image.file = BytesIO(resized_image_bytes)
-            item.image.name = item.image.name  # Keep the original filename (important!)
+            item.image.name = item.image.name
 
             item.save()
-            #print(f"Image uploaded to: {item.image.url}")
+
+            # Debugging: Print the email being passed
+            print(f"Email being passed: {request.user.email}")
+
+            # Subscribe user to SNS topic
+            sns_client = boto3.client(
+                'sns',
+                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                aws_session_token=settings.AWS_SESSION_TOKEN,
+                region_name=settings.AWS_REGION
+            )
+            sns_client.subscribe(
+                TopicArn=settings.SNS_TOPIC_ARN,
+                Protocol='email',
+                Endpoint=request.user.email
+            )
+
             return redirect('home')
     else:
         form = ItemForm()

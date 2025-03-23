@@ -15,24 +15,53 @@
             <div class="card p-4 mb-4" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
                 <form method="post">
                     {% csrf_token %}
-                    <!-- Form Fields -->
-                    {% for field in form %}
+                    <!-- Mobile Number Field -->
                     <div class="mb-3">
-                        <label for="{{ field.id_for_label }}" class="form-label" style="color: #f8f9fa;">{{ field.label }}</label>
-                        <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" 
-                               class="form-control rounded-pill bg-transparent text-white border-2 border-white p-2 input-field" 
-                               placeholder="Enter {{ field.label }}" value="{{ field.value|default_if_none:'' }}" 
+                        <label for="{{ form.mobile_number.id_for_label }}" class="form-label" style="color: #f8f9fa;">Mobile Number</label>
+                        <input type="{{ form.mobile_number.field.widget.input_type }}" name="{{ form.mobile_number.name }}" 
+                               id="{{ form.mobile_number.id_for_label }}" class="form-control rounded-pill bg-transparent text-white border-2 border-white p-2 input-field" 
+                               placeholder="Enter Mobile Number" value="{{ form.mobile_number.value|default_if_none:'' }}" 
                                style="transition: all 0.3s;">
-                        <!-- Display form errors for the field -->
-                        {% if field.errors %}
+                        {% if form.mobile_number.errors %}
                             <div class="text-danger mt-2">
-                                {% for error in field.errors %}
+                                {% for error in form.mobile_number.errors %}
                                     {{ error }}
                                 {% endfor %}
                             </div>
                         {% endif %}
                     </div>
-                    {% endfor %}
+
+                    <!-- Address Field -->
+                    <div class="mb-3">
+                        <label for="{{ form.address.id_for_label }}" class="form-label" style="color: #f8f9fa;">Address</label>
+                        <input type="{{ form.address.field.widget.input_type }}" name="{{ form.address.name }}" 
+                               id="{{ form.address.id_for_label }}" class="form-control rounded-pill bg-transparent text-white border-2 border-white p-2 input-field" 
+                               placeholder="Enter Address" value="{{ form.address.value|default_if_none:'' }}" 
+                               style="transition: all 0.3s;">
+                        {% if form.address.errors %}
+                            <div class="text-danger mt-2">
+                                {% for error in form.address.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Email Field -->
+                    <div class="mb-3">
+                        <label for="{{ form.email.id_for_label }}" class="form-label" style="color: #f8f9fa;">Email</label>
+                        <input type="{{ form.email.field.widget.input_type }}" name="{{ form.email.name }}" 
+                               id="{{ form.email.id_for_label }}" class="form-control rounded-pill bg-transparent text-white border-2 border-white p-2 input-field" 
+                               placeholder="Enter Email" value="{{ form.email.value|default_if_none:'' }}" 
+                               style="transition: all 0.3s;">
+                        {% if form.email.errors %}
+                            <div class="text-danger mt-2">
+                                {% for error in form.email.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
 
                     <!-- Save Button -->
                     <div class="text-center">

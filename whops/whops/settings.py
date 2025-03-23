@@ -76,8 +76,18 @@ WSGI_APPLICATION = 'whops.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-
 DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'lfbox_db',
+        'USER': 'lfboxuser',
+        'PASSWORD': 'qeEp45v87e_t!G$VrpGb2pHCST]V',
+        'HOST': 'whops-lfbox-db.cb86eoasu4sa.us-east-1.rds.amazonaws.com',
+        'PORT': '5431'
+    }
+}
+
+"""DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('RDS_DB_NAME', 'default_db_name'),
@@ -85,17 +95,6 @@ DATABASES = {
         'PASSWORD': os.environ.get('RDS_PASSWORD', 'default_password'),
         'HOST': os.environ.get('RDS_HOSTNAME', 'localhost'),
         'PORT': os.environ.get('RDS_PORT', '5432'),
-    }
-}
-
-"""DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'lfbox_db',
-        'USER': 'lfbox_user',
-        'PASSWORD': 'Mildstones@911',
-        'HOST': 'localhost',
-        'PORT': '5431',  # Change if using a different port
     }
 }"""
 
@@ -141,8 +140,10 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#AWS_ACCESS_KEY_ID = 'ASIA3IGI23S2QQDE3NRZ'
-#AWS_SECRET_ACCESS_KEY = 'dYjhQ/2xAD1UwEDdnV8H4Ph3BXsk8GLP3QEaXxux'
+AWS_ACCESS_KEY_ID = 'ASIA3IGI23S25AVTFJK5'
+AWS_SECRET_ACCESS_KEY = '1cr3UbIf/M3D3gpWKsbK939PNALGG4TuKiwsu+NK'
+AWS_SESSION_TOKEN = 'IQoJb3JpZ2luX2VjEIH//////////wEaCXVzLXdlc3QtMiJGMEQCIEXNvRjWllo4PUrkuVleGzP1CL8SPEX8dK/OqogKBu8sAiATXKLRYo6niUzgTNPZX8Y0jrUjGonBafII+sb1KRFzhCq9Agja//////////8BEAAaDDc3MzUxNTMwNDExNyIMkpSfpwQ0OkYi4Ao+KpECklPhm3vx5TPLzSDk/p3fgEU5R1wCttseIusDpyr82S/ft0hTjhhI0T1FNt2KiJQk2L4ENiapF/297GxAH8NmmNLTfn7ilTvurXcUKW1u6lVaes2ZyoOQpKXnx+WTulBWUxA42J8bxH3rzB2SlHbBX6ANo+NArbnkqegnGxT8xn1FY7CGKr+hv1m/HhM8eOlgtrjSWZOso2gXy2un6nbF9YHkr343g+fSizHrxGMadgVdR0UnFaHDO/PrL6DTxjk/CQrWIyZVovyMBOSoYzAY9psN60DCIQ4eHfTT7w8xkZEUxnqvivn1GLBbv4/Fzm3Pq35Tkw/Hk5rgXKMo05oZOSzBmp/G1huO7fVusqWuXIc1MPrtgL8GOp4B11g9V5euBqh0F3Ch7jGnqcRIJAWvefqxu6hQuzpqStlQz34zB9ta+E2K0M9kM92Bfr1NIBkzGtw1Vhz5zAOSP7e+5cBxIbrE41u6NbW3KXuk6BlY0zFFS1+TUQ6MXVWUQZTvx9koslpZLI7V6UVmWp+UJpHCMh9YyU65pG4Rz/0k25Lk/O6JIag6Q4lHCySgxGg8kTFCa+yEDz8EtXk='
+AWS_REGION = 'us-east-1'
 # Django Storages configuration
 AWS_STORAGE_BUCKET_NAME = 'whops-lfbox-s3-bucket'  # Replace with your bucket name
 AWS_S3_SIGNATURE_NAME = 's3v4'
@@ -153,39 +154,17 @@ AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 AWS_QUERYSTRING_AUTH = False  # Allow public access
 
 # Use IAM role for authentication (no access keys needed)
-AWS_USE_INSTANCE_PROFILE = True
+#AWS_USE_INSTANCE_PROFILE = True
+
+SNS_TOPIC_ARN = 'arn:aws:sns:us-east-1:773515304117:whops-lfbox'
 
 # Media files configuration
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}'
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
 #STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'  # Or use s3.amazonaws.com
 #MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Path to the media directory on the filesystem
 
 LOGIN_URL = 'login'  # Name of the login URL pattern
 LOGIN_REDIRECT_URL = 'home'  # Redirect to the 'home' URL after login
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'debug.log',  # Logs will be saved in this file
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'lf_box': {  # Replace 'lf_box' with the name of your app
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    },
-}
