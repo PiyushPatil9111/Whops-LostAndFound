@@ -26,24 +26,46 @@ class Item(models.Model):
             'sns',
             aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
             aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            aws_session_token=settings.AWS_SESSION_TOKEN,
             region_name=settings.AWS_REGION
         )
-
+    
         # Find matching lost items
         lost_items = Item.objects.filter(
             status='L',
             title__icontains=self.title,
             location__icontains=self.location
         )
-
+    
+        # Get the founder's profile (user who posted the found item)
+        founder_profile = Profile.objects.get(user=self.user)
+    
         for lost_item in lost_items:
-            message = f"A matching found item has been posted:\n\nTitle: {self.title}\nDescription: {self.description}\nLocation: {self.location}\nPosted by: {self.user.username}"
+            message = (
+                f"Dear {lost_item.user.username},\n\n"
+                f"We are pleased to inform you that a matching found item has been posted on our platform! "
+                f"It seems that someone has found an item that matches the description of your lost item. "
+                f"Here are the details:\n\n"
+                f"**Item Details:**\n"
+                f"- Title: {self.title}\n"
+                f"- Description: {self.description}\n"
+                f"- Location Found: {self.location}\n\n"
+                f"**Founder's Contact Information:**\n"
+                f"- Posted by: {self.user.username}\n"
+                f"- Mobile Number: {founder_profile.mobile_number}\n"
+                f"- Address: {founder_profile.address}\n\n"
+                f"Please reach out to the founder at your earliest convenience to claim your item. "
+                f"We hope this brings you one step closer to recovering your lost belongings!\n\n"
+                f"If you have any questions or need further assistance, feel free to contact us.\n\n"
+                f"Best regards,\n"
+                f"The Lost and Found Team"
+            )
             sns_client.publish(
                 TopicArn=settings.SNS_TOPIC_ARN,
                 Message=message,
                 Subject="Matching Found Item"
             )
-    
+        
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     mobile_number = models.CharField(max_length=15, blank=True, null=True)

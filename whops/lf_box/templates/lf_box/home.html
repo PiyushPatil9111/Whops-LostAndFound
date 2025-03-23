@@ -30,6 +30,14 @@
                     <h5 class="card-title" style="color: #f8f9fa;">{{ item.title }}</h5> <!-- Light color for title -->
                     <p class="card-text" style="color: #e0e0e0;">{{ item.description|truncatewords:15 }}</p> <!-- Light gray for description -->
                     <p class="card-text" style="color: #e0e0e0;"><strong>Labels:</strong> {{ item.labels }}</p> <!-- Light gray for labels -->
+                    <p class="card-text" style="color: #e0e0e0;">
+                        <strong>Status:</strong>
+                        {% if item.status == 'L' %}
+                            <span style="color: #ff6b6b;">Lost</span> <!-- Red color for Lost -->
+                        {% elif item.status == 'F' %}
+                            <span style="color: #4ecdc4;">Found</span> <!-- Green color for Found -->
+                        {% endif %}
+                    </p>
                     <p class="card-text" style="color: #e0e0e0;"><strong>Posted by:</strong> 
                         {% if item.user.profile %}
                             <a href="{% url 'view_profile' item.user.profile.id %}" style="color: #fad0c4; text-decoration: none;"> <!-- Accent color for links -->

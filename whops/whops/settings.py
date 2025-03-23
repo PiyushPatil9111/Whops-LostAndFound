@@ -76,7 +76,7 @@ WSGI_APPLICATION = 'whops.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
+"""DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'lfbox_db',
@@ -85,9 +85,9 @@ DATABASES = {
         'HOST': 'whops-lfbox-db.cb86eoasu4sa.us-east-1.rds.amazonaws.com',
         'PORT': '5431'
     }
-}
+}"""
 
-"""DATABASES = {
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('RDS_DB_NAME', 'default_db_name'),
@@ -96,7 +96,7 @@ DATABASES = {
         'HOST': os.environ.get('RDS_HOSTNAME', 'localhost'),
         'PORT': os.environ.get('RDS_PORT', '5432'),
     }
-}"""
+}
 
 
 # Password validation
